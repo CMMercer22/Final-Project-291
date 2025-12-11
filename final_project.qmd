@@ -34,23 +34,25 @@ data <-cleaned_name_school |>
 ```
 
 ```{r}
+#changed to be highest avg
 plot_economical_region <- data |>
  select(district , percent_economically_disadvantaged)|>
   group_by(district) |>
   summarise(avg_disadvantaged = mean(percent_economically_disadvantaged, na.rm = TRUE)) |>
-  arrange((avg_disadvantaged))
+  arrange(desc(avg_disadvantaged))
 plot_economical_region
 ```
 
 ```{r}
-lowest_10_region <- plot_economical_region |> head(10)
+highest_10_region <- plot_economical_region |> head(10)
 ```
 
 ## Plot 1
 
 ```{r}
 #plotting the data 
-ggplot(lowest_10_region, aes(x = reorder(district, avg_disadvantaged), 
+#change interpretation of the plot to be about highest 10. Mention location, type, overall scores for these.
+ggplot(highest_10_region, aes(x = reorder(district, avg_disadvantaged), 
                                    y = avg_disadvantaged, 
                                    fill = avg_disadvantaged)) +
   geom_col() +
@@ -60,7 +62,7 @@ ggplot(lowest_10_region, aes(x = reorder(district, avg_disadvantaged),
     high = "springgreen3"  
   ) +
   labs(
-    title = "Districts with the Lowest Average Economically Disadvantaged Student Demographic (Top 10)",
+    title = "Districts with the Highest Average Economically Disadvantaged Student Demographic (Top 10)",
     x = "District",
     y = "Economically Disadvantaged (%)",
     fill = "Disadvantaged %"
@@ -69,6 +71,7 @@ ggplot(lowest_10_region, aes(x = reorder(district, avg_disadvantaged),
   theme(plot.title = element_text(hjust = 0.5, face = "bold"),
       panel.grid.major=  element_blank(),
       panel.grid.minor = element_blank())
+  
       
 ```
 

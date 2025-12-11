@@ -118,6 +118,7 @@ final_df$number_of_students<- as.numeric(final_df$number_of_students)
 
 ```{r}
 #Unlogged
+#this one is better
 reduced_model <-
   lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score, data = final_df )
 summary(reduced_model)
@@ -127,6 +128,7 @@ plot(reduced_model)
 
 ```{r}
 #logged
+#the logged model is worse.
 reduced_model_logged <-
   lm(log(overall_score) ~ academic_growth_score+distinction_score+ school_progress_score, data = final_df )
 summary(reduced_model_logged)
