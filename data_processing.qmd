@@ -169,6 +169,7 @@ step(reduced_model, scope = list(lower = reduced_model,
 reduced_model |>
   glance()
 ```
+
 ```{r}
 full_model |>
   glance()
@@ -180,7 +181,9 @@ vif(reduced_model)
 vif(full_model)
 
 ```
+
 #Influential points
+
 ```{r}
 library(broom)
 full_augmented <- augment(full_model)
@@ -189,8 +192,8 @@ full_augmented <- augment(full_model)
 full_augmented
 ```
 
-
 #Threshold valueee
+
 ```{r}
 #Sample size = 1356
 
@@ -198,6 +201,7 @@ leverage_threshold <- 2 * (6)/1356
 leverage_threshold
 
 ```
+
 ```{r}
 library(ggplot2)
 ggplot(full_augmented, aes(y = .hat)) +
@@ -207,11 +211,3 @@ geom_hline(yintercept = 0.008849558,
   coord_flip()+
   theme_minimal()
 ```
-
-
-
-
-
-
-
-
