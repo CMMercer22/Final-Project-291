@@ -138,7 +138,7 @@ plot(reduced_model)
 #logged
 #the logged model is worse.
 reduced_model_logged <-
-  lm(log(overall_score) ~ academic_growth_score+distinction_score+ school_progress_score, data = final_df )
+  lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score, data = final_df )
 summary(reduced_model_logged)
 ```
 
@@ -244,5 +244,11 @@ final_df <-final_df[-333, ]
 ```{r}
 new_model <- lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score + percent_economically_disadvantaged+number_of_students, data = final_df )
 summary(new_model)
+```
+
+```{r}
+reduced_model_logged <-
+  lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score, data = final_df )
+summary(reduced_model_logged)
 ```
 
