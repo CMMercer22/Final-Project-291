@@ -187,29 +187,42 @@ vif(full_model)
 #Influential points
 
 ```{r}
-library(broom)
-full_augmented <- augment(full_model)
-  full_augmented$campus <- final_df$campus
-  select(.cooksd, .std.resid, .hat, .sigma, overall_score, academic_growth_score, distinction_score, school_progress_score,overall_score,percent_economically_disadvantaged, number_of_students ) 
-full_augmented
-```
+influence <- augment(full_model)
 
-#Threshold valueee
-
-```{r}
-#Sample size = 1356
-
-leverage_threshold <- 2 * (6)/1356
-leverage_threshold
+influence <- influence |> mutate(row_id = row_number())
 
 ```
 
 ```{r}
-library(ggplot2)
-ggplot(full_augmented, aes(y = .hat)) +
-  geom_point() +
-geom_hline(yintercept = 0.008849558,
-             color = "blue") +  
-  coord_flip()+
-  theme_minimal()
+k_plus_one <- length(coef(full_model))
+n <- nrow(final_df)
+
+# Filtering the data to view observations with high leverage
+influence |> filter(.hat > 2 * k_plus_one/n)
+leverage_index <- influence |> filter(.hat > 2 * k_plus_one/n) |> select(row_id) |> pull()
+save <- final_df[leverage_index,]
+augment_df<-influence[leverage_index,]
+
+save$row_id <- leverage_index
+
+augment_df<- augment_df |> left_join(save|>select(campus, district,row_id), join_by("row_id"=="row_id"))
+
 ```
+
+```{r}
+##std residuals
+augment_df1<-augment_df |> filter(.std.resid < -2 | .std.resid > 2)
+std_resid_id <- augment_df |> filter(.std.resid < -2 | .std.resid > 2) |> select(row_id) |> pull()
+```
+
+```{r}
+#dont run this again. This is indexed so it will remove the wrong stuff if you do
+final_df <-final_df[-1130,]
+final_df <-final_df[-892,]
+final_df <-final_df[-541, ]
+final_df <-final_df[-389, ]
+final_df <-final_df[-333, ]
+```
+
+
+
