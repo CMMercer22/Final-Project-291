@@ -169,20 +169,16 @@ final_df <- filtered_df_pivoted |>
 final_df
 
 ```
-
 # Methods
 
-The data set used in this report is from the Texas Education Agency’s 2025 State, Region, District, and Campus-Level Accountability Report. The data in this report originates from public and charter schools in Texas overseen by the Texas Education Agency (TEA), who are required to submit all student standardized tests and other academic performance data [@texaseducationagency2025]. Each observation in this data set represents a different campus. The original data contains many variables related to school performance, but in this paper we will focus on schools’ Overall Score, their Academic Growth Scores, their Distinction Scores, the number of students, and the percentage of students who are economically disadvantaged.
+#### Data Source
 
-The overall score represents the school’s final accountability rating on a 0-100 scale. It represents a schoolwide summary of academic performance, progress, and equity. This score is calculated by using three accountability domains: Student Achievement, School Progress, and Closing the Gaps. For this score, 70% is made up of either the Student Achievement or School progress (it picks the “better outcome”) and 30% of it is from their Closing the Gaps domain score (which evaluates how well a school is supporting the performance of specific students, specifically economically disadvantaged students, students from certain racial groups, and special needs students among others). The data handbook further explains how these were specifically calculated [@texaseducationagency2025]. The academic growth score is a measure of how much students improved academically over time. It is calculated using a raw growth score which is based on whether students met, exceeded, or fell short of STAAR progress (which is further defined in the data handbook). This raw growth score is then converted to a scaled score using a table, which then becomes the academic growth score, which is also measured on a 0-100 scale.
+The data set used in this report is from the Texas Education Agency’s 2025 State, Region, District, and Campus-Level Accountability Report. The data in this report originates from public and charter schools in Texas overseen by the Texas Education Agency (TEA), who are required to submit all student standardized tests and other academic performance data [@texaseducationagency2025]. Each observation in this data set represents a different campus.
 
-The distinction score indicators are calculated by comparing a school’s performance on multiple indicators to a group of similar campuses. If it places in the top quartile on at least 50% of indicators (for elementary and middle school) or 33% (for high school), it received the distinction. This means that the distinction score is whether or not the school performed exceptionally well compared to similar schools, and is a binary value of 0 (no distinction) or 1 (distinction) across multiple categories.
 
-The percentage of students who are economically disadvantaged represents the percentage of students who are economically disadvantaged according to a few criteria. These include eligibility for free and reduced lunch prices and SNAP/TANF participation.
+Before building our model, we performed some data pre-processing steps to clean and organize the initial data set for analysis:
 
-We also looked at the number of students in each school, which is a number representing the number of students enrolled in each campus.
-
-### Data Processing Steps :
+### Dataset Processing Steps :
 
 1.  The dataframe had column names that were either capitalized inconsistently/had multiple spaces in between words; which made parsing the names harder for R to work on. So we cleaned the column names. (e.g., `School Progress Score` $\rightarrow$ `school_progress_score`)
 
@@ -196,8 +192,18 @@ We also looked at the number of students in each school, which is a number repre
 
 6.  While working on this data set, the numeric variables had their values as characters and not numeric. So we converted them to numeric values for building our model.
 
-7.  The final variables selected to later assess on are : `Number_of_students`,`academic_growth_score`, `percent_economically_disadvantaged,overall_score`, `school_progress_score`,`distinction_score`,
-`campus`,`district\`
+The final variables selected for analysis are:
+
+- `number_of_students`
+- `academic_growth_score`
+- `percent_economically_disadvantaged`
+- `overall_score`
+- `school_progress_score`
+- `distinction_score`
+- `campus`
+- `district`
+
+
 
 <center>
 
@@ -214,3 +220,60 @@ We also looked at the number of students in each school, which is a number repre
 **After NA removal:** 1,356 observations
 
 </center>
+
+\newpage
+#### Variable Units and Range
+
+The original data contains many variables related to school performance, but in this paper we will focus on schools’ Overall Score, their Academic Growth Scores, their Distinction Scores, the number of students, and the percentage of students who are economically disadvantaged. Before selecting our model, we chose one variable from here as response variable and the rest as explanatory variable.
+
+
+
+
+Table 1: Response Variable Information
+
+| Variable         | Type    | Range        |
+|------------------|---------|--------------|
+| Overall Score | Numeric | 0–100 points |
+
+
+Table 2: Explanatory Variable Information
+
+| Variable                            | Type    | Unit of Observation | Range   |
+|------------------------------------|---------|---------------------|---------|
+| Number of students                 | Numeric | Students            | 1–5,317 |
+| Academic growth score              | Numeric | School              | 0–100   |
+| Percent economically disadvantaged | Numeric | School              | 0–100%  |
+| School progress score              | Numeric | School              | 0–100   |
+| Distinction score                  | Numeric | School              | 0–7     |
+
+##### Variable Descriptions
+
+
+1. `Overall Score` : This variable represents the school’s final accountability rating on a 0-100 scale. It represents a schoolwide summary of academic performance, progress, and equity. This score is calculated by using three accountability domains: Student Achievement, School Progress, and Closing the Gaps. For this score, 70% is made up of either the Student Achievement or School progress (it picks the “better outcome”) and 30% of it is from their Closing the Gaps domain score (which evaluates how well a school is supporting the performance of specific students, specifically economically disadvantaged students, students from certain racial groups, and special needs students among others). The data handbook further explains how these were specifically calculated [@texaseducationagency2025]. 
+
+
+2. `Academic Growth Score` :  This variable is a measure of how much students improved academically over time. It is calculated using a raw growth score which is based on whether students met, exceeded, or fell short of STAAR progress (which is further defined in the data handbook). This raw growth score is then converted to a scaled score using a table, which then becomes the academic growth score, which is also measured on a 0-100 scale.
+
+3. `Distinction Score` : This variable is derived from the 7 categories of Distinction that schools report. We explained this derivation in our dataset processing steps. But first here is what distinction means across the categories: It is calculated by comparing a school’s performance on multiple indicators to a group of similar campuses. If it places in the top quartile on at least 50% of indicators (for elementary and middle school) or 33% (for high school), it received the distinction. This means that the distinction score is whether or not the school performed exceptionally well compared to similar schools, and is a binary value of 0 (no distinction) or 1 (distinction) across multiple categories. So the distinction score variable sums up the amount of category a school got distinction and reports it on a 0-7 scale. 
+
+4. `Percent economically disadvantaged` : The percentage of students who are economically disadvantaged represents the percentage of students who are economically disadvantaged according to a few criteria. These include eligibility for free and reduced lunch prices and SNAP/TANF participation.
+
+5. `Number of students` : This variable represents the number of students enrolled in each campus.
+
+6. `School Progress Score` : 
+
+
+#### Model Specification
+
+We built a multiple linear regression model using nested F test model. 
+
+## Will add the models here
+
+#### Model Selection
+
+To determine the model, we started with calculating the VIF to detect any multicolinearity issues among the explanatory variables. We calculated this using both the reduced and full model. There were no multicolinearity issues given all of the VIFs show litle colinearity < 5. 
+
+#Just a bit confused here so will review it later
+We began to test our model using stepwise AIC. We started with a full model that had all the variable and used the stepwise AIC forward method. We can see the AIC dropped as we go.
+
+
