@@ -152,24 +152,32 @@ summary(full_model)
 ```
 
 ```{r}
+plot(full_model)
 
-plot_p <- data.frame(
-  Predictors = c("Academic Growth Score","Distinction Score","School Progress Score","Percent Economically Disadvantaged", "Number of Students" ),
-  P_value = c(0.0000167, 0.0000000, 0.0000000, 0.0000000, 0.0346073)
-)
-
-ggplot(plot_p, aes(x=P_value, y = Predictors))+
-  geom_point(size = 2)+ 
-  geom_vline(xintercept = 0.05, color = "red")+
-  coord_cartesian(xlim = c(-0.01, 0.08)) +
-  labs(x= "P-Value", y = "Predictors", title= "Significance of Predictors")+
-  theme_minimal()+
-  theme(axis.text.y = element_text(angle = 35, hjust = 1),plot.title = element_text(hjust = 0.5, face = "bold"))
 ```
 
+```{r}
+vcov(full_model)
+
+```
 
 ```{r}
-plot(full_model)
+g <- coef(full_model)[1] + coef(full_model)[5]
+g_var <- vcov(full_model)[1,1] + vcov(full_model)[5,5] + 2*vcov(full_model)[1,5]
+g_se <- sqrt(g_var)
+t_stat <- (g- 0)/g_se; as.numeric(t_stat)
+
+```
+
+```{r}
+qt(0.975,1255 - 5 -1)
+```
+
+```{r}
+upper_ci <- (7.07454 + 1.961865*1.76277)
+lower_ci <- (7.07454 - 1.961865*1.76277)
+lower_ci
+upper_ci
 ```
 
 ```{r}
