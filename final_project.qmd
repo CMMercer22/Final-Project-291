@@ -342,6 +342,41 @@ We began to test our model using forward model selection with AIC. See Appendix 
 
 To find the influential points, we first filtered the data to find the schools with leverage that was outside of the acceptable range, then further filtered that list to the schools that additionally had a standardized residual that was outside of the range. After filtering, we were left with only five schools that were potential influential points. We refit the model without them and saw no noticeable difference, so we added them back into the final data set. See Appendix D for detailed results. 
 
+# Results 
+
+## Interpretation of the fitted model 
+
+## Interpretation of the relevant co-effecients 
+
+## Practical Importance
+
+## Corresponding Confidence Interval 
+
+## Interpret the hypothesis test and its' results 
+
+## ANOVA
+
+
+## Plot 
+```{r}
+plot_p <- data.frame(
+  Predictors = c("Academic Growth Score","Distinction Score","School Progress Score","Percent Economically Disadvantaged", "Number of Students" ),
+  P_value = c(0.0000167, 0.0000000, 0.0000000, 0.0000000, 0.0346073)
+)
+
+```
+```{r}
+ggplot(plot_p, aes(x=P_value, y = Predictors))+
+  geom_point(size = 2)+ 
+  geom_vline(xintercept = 0.05, color = "red")+
+  coord_cartesian(xlim = c(-0.01, 0.08)) +
+  labs(x= "P-Value", y = "Predictors", title= "Significance of Predictors")+
+  theme_minimal()+
+  theme(axis.text.y = element_text(angle = 35, hjust = 1),plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+This plot shows us that all of our predictor is lower than 0.05, which is our significance level. 
+
 
 # Discussion {#sec-discussions}
 The goal of this study was to address the question whether schools in Texas with higher percentages of economically disadvantaged students have lower accountability ratings. Some things should be considered before drawing any conclusions from this model. First, one potential issue with this model is a violation of independence among the variables. Because the Overall Score variable is calculated using some of the metrics within the explanatory variables, we have some concern about this model's independence. However, one of the strengths of this study was a very low VIC and AIC across all variables. So we are somewhat confident that this should not be a major problem, as it indicates the variables are not collinear. Another thing to consider is that this data is only from one year, and it is very difficult to build a dataset with longer term data due to Texas’s constant fluctuations in how it reports and calculates the same data across many years. Next, the major strength of this study is that the model performs very well and yields statistically significant results.  Finally, the conclusions drawn from this should also only be used to form conclusions about public and charter schools within Texas in the academic year 2024-2025. This is because the metrics used to create many of the variables tested are specific to Texas’s academic measurements, such as the STAAR test, and cannot easily be compared with those of other States, and the data used is limited to only Texas public and charter schools.  
