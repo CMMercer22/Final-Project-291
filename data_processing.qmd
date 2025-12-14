@@ -143,12 +143,6 @@ summary(reduced_model)
 
 
 ```{r}
-#this is a bad plot. I think for plots we should just use the model conditions and interpret those plots.
-ggplot(final_df, aes(x= academic_growth_score, y = overall_score, color = distinction_score))+geom_point()+geom_smooth(method = "lm", se = TRUE)
-```
-
-
-```{r}
 plot(reduced_model)
 ```
 
