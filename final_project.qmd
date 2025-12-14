@@ -24,10 +24,6 @@ library(kableExtra)
 library(car)
 ```
 
-# Abstract
-
-Understanding the extent to which economic inequality affects education quality and accessibility is crucial to making progress towards addressing these issues. While one can assume that economically disadvantaged areas are less likely to have high quality public education, the objective of this paper is to explore specifically if schools in Texas with higher percentages of economically disadvantaged students have lower accountability ratings. This was done by modeling data from the Texas Education Agency’s annual academic accountability ratings. In doing this, we found that the percentage of economically disadvantaged students was a statistically significant predictor of a school’s overall score, while controlling other factors such as the number of students, the academic growth scores, and distinction points. These findings suggest that public and charter schools in Texas with lower overall scores have a higher percentage of economically disadvantaged students, and additionally, schools with higher overall scores tend to have lower percentages of economically disadvantaged students.
-
 # Introduction
 
 Through this paper, we aim to address the question: Do schools in Texas with higher percentages of economically disadvantaged students have lower accountability ratings? To address this, we sourced our data from Texas’s annual academic accountability ratings, which it provides for all of its public and charter schools. This question is of particular interest now because the Academic accountability ratings are the benchmark the Texas Education Agency (TEA) uses to take over underperforming districts[@texaseducationagency2025]. This adds additional questions to what makes a school at risk for being taken over. The previous two districts to be taken over, Houston ISD and Fort Worth ISD, both had a large percentage of economically disadvantaged students. Some districts have begun redrawing their boundaries to avoid government takeovers[@edison2025]. If schools that predominantly serve economically disadvantaged students are closing to avoid a government takeover, this would cause an undue burden on those students, who would then have to travel further to get to classes, which can already be a barrier to education. Texas has also recently updated the criteria in its accountability rating system, which some teachers and superintendents claim has made earning a passing grade more difficult, potentially affecting whether student economic status influences academic ratings. Previous research has suggested a connection between a student's economic status and school performance. For example, a study from Stanford examining all public school districts in the United States found a strong relationship between district socioeconomic status and average academic achievement [@seanf.reardon2016]. Another study found a strong connection between student socioeconomic status and student achievement[@jenniferelizabethbarry2006]. But neither of these are recent or uses the data that Texas uses to internally select what it considers to be failing schools. Our paper aims to provide additional insight into how Texas’s academic achievement ratings relate to students' socioeconomic status, given the state’s new academic achievement rating system. Texas’s academic accountability rating system reports multiple variables containing information on school performance, but the ones of interest to us are as follows: Academic Growth Score, Overall Score, School Progress Score, and multiple variables indicating distinction in particular areas, which we have combined into a single variable that tracks total earned distinctions.
@@ -273,6 +269,7 @@ Table 2: Explanatory Variable Information
 
 We built a multiple linear regression model using nested F test model.
 
+
 ```{r,include=FALSE}
 final_df$academic_growth_score <- as.numeric(final_df$academic_growth_score)
 final_df$distinction_score <- as.numeric(final_df$distinction_score)
@@ -345,6 +342,7 @@ To find the influential points, we first filtered the data to find the schools w
 
 ## Corresponding Confidence Interval
 
+
 ```{r}
 vcov(full_model)
 
@@ -368,8 +366,7 @@ lower_ci <- (7.07454 - 1.961865*1.76277)
 lower_ci
 upper_ci
 ```
-
-```         
+```
 
 
 
@@ -386,11 +383,15 @@ $$
 We can conduct this nested F tests using anova. 
 
 
-```f3175f2a-e8a0-4436-be12-b33925b6d220
-31b8e172-b470-440e-83d8-e6b185028602:dAB5AHAAZQA6AFoAZwBBAHoAQQBEAEUAQQBOAHcAQQAxAEEARwBZAEEATQBnAEIAaABBAEMAMABBAFoAUQBBADQAQQBHAEUAQQBNAEEAQQB0AEEARABRAEEATgBBAEEAegBBAEQAWQBBAEwAUQBCAGkAQQBHAFUAQQBNAFEAQQB5AEEAQwAwAEEAWQBnAEEAegBBAEQATQBBAE8AUQBBAHkAQQBEAFUAQQBZAGcAQQAyAEEARwBRAEEATQBnAEEAeQBBAEQAQQBBAAoAcABvAHMAaQB0AGkAbwBuADoATQBRAEEANQBBAEQAZwBBAE0AdwBBAHoAQQBBAD0APQAKAHAAcgBlAGYAaQB4ADoACgBzAG8AdQByAGMAZQA6AFkAQQBCAGcAQQBHAEEAQQBlAHcAQgB5AEEASAAwAEEAQwBnAEIAaABBAEcANABBAGIAdwBCADIAQQBHAEUAQQBYAHcAQgAwAEEARwBVAEEAYwB3AEIAMABBAEMAQQBBAFAAQQBBAHQAQQBDAEEAQQBZAFEAQgB1AEEARwA4AEEAZABnAEIAaABBAEMAZwBBAGMAZwBCAGwAQQBHAFEAQQBkAFEAQgBqAEEARwBVAEEAWgBBAEIAZgBBAEcAMABBAGIAdwBCAGsAQQBHAFUAQQBiAEEAQQBzAEEAQwBBAEEAWgBnAEIAMQBBAEcAdwBBAGIAQQBCAGYAQQBHADAAQQBiAHcAQgBrAEEARwBVAEEAYgBBAEEAcABBAEMAQQBBAEMAZwBCAGkAQQBIAEkAQQBiAHcAQgB2AEEARwAwAEEATwBnAEEANgBBAEgAUQBBAGEAUQBCAGsAQQBIAGsAQQBLAEEAQgBoAEEARwA0AEEAYgB3AEIAMgBBAEcARQBBAFgAdwBCADAAQQBHAFUAQQBjAHcAQgAwAEEAQwBrAEEASQBBAEIAOABBAEQANABBAEMAZwBBAGcAQQBDAEEAQQBhAHcAQgBoAEEARwBJAEEAYgBBAEIAbABBAEUAVQBBAGUAQQBCADAAQQBIAEkAQQBZAFEAQQA2AEEARABvAEEAYQB3AEIAaABBAEcASQBBAGIAQQBCAGwAQQBDAGcAQQBLAFEAQQBLAEEAQQBvAEEAWQBBAEIAZwBBAEcAQQBBAAoAcwB1AGYAZgBpAHgAOgA=:31b8e172-b470-440e-83d8-e6b185028602
-```
+```{r}
+anova_test <- anova(reduced_model, full_model) 
+broom::tidy(anova_test) |>
+  kableExtra::kable()
 
-We reject the null hypothesis and conclude that we have very strong evidence that atleast one of the extra terms is necessary (p \< 0.05) taking the significance level 0.05.
+```
+We reject the null hypothesis and conclude that we have very strong evidence that atleast one of the extra terms is necessary (p < 0.05) taking the significance level 0.05. 
+
+
 
 ## Plot
 
@@ -413,6 +414,8 @@ ggplot(plot_p, aes(x=P_value, y = Predictors))+
 ```
 
 This plot shows us that all of our predictor is lower than 0.05, which is our significance level.
+
+
 
 # Discussion {#sec-discussions}
 
