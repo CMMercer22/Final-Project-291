@@ -1,11 +1,16 @@
 ---
 title: "An Exploration of the Texas Education Agency 2022-2023 Accountability Ratings Dataset"
+author: "Radiah Khan, Mercer Mercer, Nafisa Mohamed, Catherine Weeks"
 format: pdf
 editor: visual
-author: Radiah Khan, Mercer Mercer, Nafisa Mohamed, Catherine Weeks
 bibliography: references.bib
+header-includes:
+  - \usepackage{titling}
+  - \pretitle{\begin{center}\LARGE\bfseries}
+  - \posttitle{\end{center}}
 ---
 
+\newpage
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   warning = FALSE
@@ -15,6 +20,7 @@ knitr::opts_chunk$set(
 ```{r,include=FALSE}
 library(broom)
 library(kableExtra)
+library(car)
 ```
 
 
@@ -141,9 +147,7 @@ ggplot(data, aes(x = academic_growth_score, y = overall_score)) +
 
 The scatterplot of Academic Growth Score versus Overall Score reveals a clear positive relationship: higher academic growth scores tend to accompany higher overall scores, with many schools clustered along an upward trend from roughly 50–60 overall at lower growth values to 85–100 overall at higher growth values. The spread is wider at lower growth levels and tighter near the top, suggesting a ceiling effect where very high growth scores correspond to consistently high overall scores; this reinforces that academic growth is an important predictor of overall performance, although variability at lower growth levels indicates other factors also influence overall score.
 
-# Variables
 
-## Filtering it to 9-12
 
 ```{r,include=FALSE}
 filtered_df <- data |>
@@ -181,6 +185,8 @@ final_df
 
 ```
 
+\newpage 
+
 # Methods
 
 #### Data Source
@@ -189,7 +195,7 @@ The data set used in this report is from the Texas Education Agency’s 2025 Sta
 
 Before building our model, we performed some data pre-processing steps to clean and organize the initial data set for analysis:
 
-### Dataset Processing Steps :
+### Dataset Processing Steps 
 
 1.  The dataframe had column names that were either capitalized inconsistently/had multiple spaces in between words; which made parsing the names harder for R to work on. So we cleaned the column names. (e.g., `School Progress Score` $\rightarrow$ `school_progress_score`)
 
@@ -230,7 +236,6 @@ The final variables selected for analysis are:
 
 </center>
 
-\newpage
 
 #### Variable Units and Range
 
@@ -270,6 +275,8 @@ Table 2: Explanatory Variable Information
 
 We built a multiple linear regression model using nested F test model.
 
+##### Confitoo
+
 ```{r,include=FALSE}
 final_df$academic_growth_score <- as.numeric(final_df$academic_growth_score)
 final_df$distinction_score <- as.numeric(final_df$distinction_score)
@@ -281,12 +288,11 @@ final_df$number_of_students<- as.numeric(final_df$number_of_students)
 
 The reduced model:
 $$
-\text{overall score}_i =
+\widehat{\text{overall score}}_i =
 \beta_0 +
 \beta_1 \cdot \text{academic growth score}_i +
 \beta_2 \cdot \text{distinction score}_i +
-\beta_3 \cdot \text{school progress score}_i +
-\varepsilon_i
+\beta_3 \cdot \text{school progress score}_i 
 $$
 
 ```{r,echo=FALSE}
@@ -304,7 +310,8 @@ broom::tidy(reduced_model) |>
 The full model:
 
 $$
-\text{overall score}_i = \beta_0 + \beta_1 \cdot \text{academic growth score}_i + \beta_2 \cdot \text{distinction score}_i + \beta_3 \cdot \text{school progress score}_i$$ $$+ \beta_4 \cdot \text{percent economically disadvantaged}_i + \beta_5 \cdot \text{number of students}_i + \varepsilon_i 
+\widehat{\text{overall score}}_i
+ = \beta_0 + \beta_1 \cdot \text{academic growth score}_i + \beta_2 \cdot \text{distinction score}_i + \beta_3 \cdot \text{school progress score}_i$$ $$+ \beta_4 \cdot \text{percent economically disadvantaged}_i + \beta_5 \cdot \text{number of students}_i
 $$
 
 ```{r,echo=FALSE}
@@ -314,17 +321,116 @@ broom::tidy(full_model) |>
   kableExtra::kable()
 ```
 
+#### Evaluating assumptions of the model 
+
+The four assumptions we need to evaluate are : Linearity, Independence, Normality, Equal Variance. 
+
+Assuming independence was maintained, we check the other three conditions. However, we discussed more about the concerns of independence in the discussion section (@sec-discussions)
+
+For checking the linearity and equal variance we check the residual plot of the reduced and full model. See the detailed plot in Appendix A. 
+
+For both of the reduced and full model, it violates the linearity, equal variance and normality condition. From the residual plot, we see that it widens as the x gets bigger and there is a pattern above and below y= 0 line. There seems to be unusual points as well which we will investigate later. 
+
+In the Q-Q plot, for the both of the model, the points deviates from the reference line. So it does violate the normality condition. 
 
 #### Model Selection
 
-To determine the model, we started with calculating the VIF to detect any multicolinearity issues among the explanatory variables. We calculated this using both the reduced and full model. There were no multicolinearity issues given all of the VIFs show litle colinearity < 5.
+To determine the model, we started with calculating the VIF to detect any multicollinearity issues among the explanatory variables. We calculated this using both the reduced and full model. There were no multicollinearity issues given all of the VIFs show little collinearity < 5 (see Appendix B for detailed results).
 
-We began to test our model using forward model selection with AIC. See Appendix \@ref(app-aic)) for detailed results. 
+We began to test our model using forward model selection with AIC. See Appendix C for detailed results. According to the results,the AIC drops when we add `number of students`, it further drops when we add `percent economically disadvantaged` as well.  
+
+
+To find the influential points, we first filtered the data to find the schools with leverage that was outside of the acceptable range, then further filtered that list to the schools that additionally had a standardized residual that was outside of the range. After filtering, we were left with only five schools that were potential influential points. We refit the model without them and saw no noticeable difference, so we added them back into the final data set. See Appendix D for detailed results. 
+
+
+# Discussion {#sec-discussions}
+The goal of this study was to address the question whether schools in Texas with higher percentages of economically disadvantaged students have lower accountability ratings. Some things should be considered before drawing any conclusions from this model. First, one potential issue with this model is a violation of independence among the variables. Because the Overall Score variable is calculated using some of the metrics within the explanatory variables, we have some concern about this model's independence. However, one of the strengths of this study was a very low VIC and AIC across all variables. So we are somewhat confident that this should not be a major problem, as it indicates the variables are not collinear. Another thing to consider is that this data is only from one year, and it is very difficult to build a dataset with longer term data due to Texas’s constant fluctuations in how it reports and calculates the same data across many years. Next, the major strength of this study is that the model performs very well and yields statistically significant results.  Finally, the conclusions drawn from this should also only be used to form conclusions about public and charter schools within Texas in the academic year 2024-2025. This is because the metrics used to create many of the variables tested are specific to Texas’s academic measurements, such as the STAAR test, and cannot easily be compared with those of other States, and the data used is limited to only Texas public and charter schools.  
 
 
 
-# Appendix 
-## Appendix A: Conditions of the linear regression model {#app-conditions}
-## Appendix B: VIF {#app-vif}
-## Appendix C: Stepwise AIC {#app-aic}
-## Appendix D: Influential Points {#app-influential}
+\newpage 
+
+# Appendix {.appendix}
+
+## Appendix A: Conditions of the linear regression model {#sec-conditions}
+We explored the residual and Q-Q plot of both of the model to see if it violates the linearity, nornmality and equal variance condition. 
+```{r,echo=FALSE}
+par(mfrow = c(1, 2))
+plot(reduced_model, which = 1)
+plot(reduced_model, which = 2)
+mtext("Diagnostic Plots for the Reduced Model", 
+      side = 3, line = -2, outer = TRUE, cex = 1.2, font = 2)
+par(mfrow = c(1, 1))
+```
+```{r,echo=FALSE}
+par(mfrow = c(1, 2))
+plot(full_model, which = 1)
+plot(full_model, which = 2)
+mtext("Diagnostic Plots for the Full Model", 
+      side = 3, line = -2, outer = TRUE, cex = 1.2, font = 2)
+par(mfrow = c(1, 1))
+```
+
+## Appendix B: VIF {#sec-vif}
+```{r,echo=FALSE}
+vif(reduced_model)
+vif(full_model)
+```
+
+## Appendix C: Stepwise AIC {#sec-aic}
+
+```{r,echo=FALSE}
+add1(reduced_model,
+     scope = ~ number_of_students +
+              academic_growth_score +
+              percent_economically_disadvantaged +
+              school_progress_score +
+              distinction_score,
+     test = "F")
+```
+
+
+## Appendix D: Influential Points {#sec-influential}
+```{r}
+influence <- augment(full_model)
+influence <- influence |> mutate(row_id = row_number())
+
+```
+```{r}
+k_plus_one <- length(coef(full_model))
+n <- nrow(final_df)
+
+# Filtering the data to view observations with high leverage
+influence |> filter(.hat > 2 * k_plus_one/n)
+leverage_index <- influence |> filter(.hat > 2 * k_plus_one/n) |> select(row_id) |> pull()
+save <- final_df[leverage_index,]
+augment_df<-influence[leverage_index,]
+
+save$row_id <- leverage_index
+
+augment_df<- augment_df |> left_join(save|>select(campus, district,row_id), join_by("row_id"=="row_id"))
+
+```
+```{r}
+##std residuals
+augment_df1<-augment_df |> filter(.std.resid < -2 | .std.resid > 2)
+std_resid_id <- augment_df |> filter(.std.resid < -2 | .std.resid > 2) |> select(row_id) |> pull()
+```
+```{r,include=FALSE}
+#removing the influential datapoints 
+final_df <-final_df[-1130,]
+final_df <-final_df[-892,]
+final_df <-final_df[-389, ]
+final_df <-final_df[-333, ]
+```
+```{r,include=FALSE}
+#refitting the datapoints 
+new_model <- lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score + percent_economically_disadvantaged+number_of_students, data = final_df )
+summary(new_model)
+```
+```{r,include=FALSE}
+#the refitted linear regression plots 
+reduced_model_logged <-
+  lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score, data = final_df )
+summary(reduced_model_logged)
+```
