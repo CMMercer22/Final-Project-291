@@ -244,3 +244,4 @@ reduced_model_logged <-
   lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score, data = final_df )
 summary(reduced_model_logged)
 ```
+

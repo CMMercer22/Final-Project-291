@@ -343,10 +343,10 @@ We began to test our model using forward model selection with AIC. See Appendix 
 To find the influential points, we first filtered the data to find the schools with leverage that was outside of the acceptable range, then further filtered that list to the schools that additionally had a standardized residual that was outside of the range. After filtering, we were left with only five schools that were potential influential points. We refit the model without them and saw no noticeable difference, so we added them back into the final data set. See Appendix D for detailed results. 
 
 
+# Results 
+
 # Discussion {#sec-discussions}
 The goal of this study was to address the question whether schools in Texas with higher percentages of economically disadvantaged students have lower accountability ratings. Some things should be considered before drawing any conclusions from this model. First, one potential issue with this model is a violation of independence among the variables. Because the Overall Score variable is calculated using some of the metrics within the explanatory variables, we have some concern about this model's independence. However, one of the strengths of this study was a very low VIC and AIC across all variables. So we are somewhat confident that this should not be a major problem, as it indicates the variables are not collinear. Another thing to consider is that this data is only from one year, and it is very difficult to build a dataset with longer term data due to Texas’s constant fluctuations in how it reports and calculates the same data across many years. Next, the major strength of this study is that the model performs very well and yields statistically significant results.  Finally, the conclusions drawn from this should also only be used to form conclusions about public and charter schools within Texas in the academic year 2024-2025. This is because the metrics used to create many of the variables tested are specific to Texas’s academic measurements, such as the STAAR test, and cannot easily be compared with those of other States, and the data used is limited to only Texas public and charter schools.  
-
-
 
 \newpage 
 
@@ -372,13 +372,13 @@ par(mfrow = c(1, 1))
 ```
 
 ## Appendix B: VIF {#sec-vif}
+Checking the VIF for the full model.  
 ```{r,echo=FALSE}
-vif(reduced_model)
 vif(full_model)
 ```
 
 ## Appendix C: Stepwise AIC {#sec-aic}
-
+Checking to see how adding additional parameters affect AIC. 
 ```{r,echo=FALSE}
 add1(reduced_model,
      scope = ~ number_of_students +
@@ -389,14 +389,13 @@ add1(reduced_model,
      test = "F")
 ```
 
-
 ## Appendix D: Influential Points {#sec-influential}
-```{r}
+```{r,include=FALSE}
 influence <- augment(full_model)
 influence <- influence |> mutate(row_id = row_number())
 
 ```
-```{r}
+```{r,include=FALSE}
 k_plus_one <- length(coef(full_model))
 n <- nrow(final_df)
 
@@ -411,7 +410,7 @@ save$row_id <- leverage_index
 augment_df<- augment_df |> left_join(save|>select(campus, district,row_id), join_by("row_id"=="row_id"))
 
 ```
-```{r}
+```{r,include=FALSE}
 ##std residuals
 augment_df1<-augment_df |> filter(.std.resid < -2 | .std.resid > 2)
 std_resid_id <- augment_df |> filter(.std.resid < -2 | .std.resid > 2) |> select(row_id) |> pull()
@@ -428,8 +427,8 @@ final_df <-final_df[-333, ]
 new_model <- lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score + percent_economically_disadvantaged+number_of_students, data = final_df )
 summary(new_model)
 ```
-```{r,include=FALSE}
-#the refitted linear regression plots 
+```{r,echo=FALSE}
+#the refitted linear regression summary  
 reduced_model_logged <-
   lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score, data = final_df )
 summary(reduced_model_logged)
