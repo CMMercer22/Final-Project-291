@@ -6,26 +6,39 @@ author: Radiah Khan, Mercer Mercer, Nafisa Mohamed, Catherine Weeks
 bibliography: references.bib
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE
+)
+```
+
+```{r,include=FALSE}
+library(broom)
+library(kableExtra)
+```
+
+
+
 # Introduction
 
 Through this paper, we aim to address the question: Do schools in Texas with higher percentages of economically disadvantaged students have lower accountability ratings? To address this, we sourced our data from Texas’s annual academic accountability ratings, which it provides for all of its public and charter schools. This question is of particular interest now because the Academic accountability ratings are the benchmark the Texas Education Agency (TEA) uses to take over underperforming districts[@texaseducationagency2025]. This adds additional questions to what makes a school at risk for being taken over. The previous two districts to be taken over, Houston ISD and Fort Worth ISD, both had a large percentage of economically disadvantaged students. Some districts have begun redrawing their boundaries to avoid government takeovers[@edison2025]. If schools that predominantly serve economically disadvantaged students are closing to avoid a government takeover, this would cause an undue burden on those students, who would then have to travel further to get to classes, which can already be a barrier to education. Texas has also recently updated the criteria in its accountability rating system, which some teachers and superintendents claim has made earning a passing grade more difficult, potentially affecting whether student economic status influences academic ratings. Previous research has suggested a connection between a student's economic status and school performance. For example, a study from Stanford examining all public school districts in the United States found a strong relationship between district socioeconomic status and average academic achievement [@seanf.reardon2016]. Another study found a strong connection between student socioeconomic status and student achievement[@jenniferelizabethbarry2006]. But neither of these are recent or uses the data that Texas uses to internally select what it considers to be failing schools. Our paper aims to provide additional insight into how Texas’s academic achievement ratings relate to students' socioeconomic status, given the state’s new academic achievement rating system. Texas’s academic accountability rating system reports multiple variables containing information on school performance, but the ones of interest to us are as follows: Academic Growth Score, Overall Score, School Progress Score, and multiple variables indicating distinction in particular areas, which we have combined into a single variable that tracks total earned distinctions.
 
-```{r}
+```{r,include=FALSE}
 library(readr)
 School_Year_2022_2023_Statewide_Accountability_Ratings_20251119 <- read_csv("School_Year_2022-2023_Statewide_Accountability_Ratings_20251119.csv")
 #View(School_Year_2022_2023_Statewide_Accountability_Ratings_20251119)
 ```
 
-```{r}
+```{r,include=FALSE}
 library(janitor)
 cleaned_name_school <- clean_names(School_Year_2022_2023_Statewide_Accountability_Ratings_20251119)
 ```
 
-```{r}
+```{r,include=FALSE}
 colnames(cleaned_name_school)
 ```
 
-```{r}
+```{r,include=FALSE}
 #Economically disadvantaged grouped by regions 
 library(tidyverse)
 data <-cleaned_name_school |>
@@ -33,7 +46,7 @@ data <-cleaned_name_school |>
            as.numeric(str_replace_all(percent_economically_disadvantaged, "[^0-9.]", "")))
 ```
 
-```{r}
+```{r,echo=FALSE}
 #changed to be highest avg
 plot_economical_region <- data |>
  select(district , percent_economically_disadvantaged)|>
@@ -43,13 +56,13 @@ plot_economical_region <- data |>
 plot_economical_region
 ```
 
-```{r}
+```{r,include=FALSE}
 highest_10_region <- plot_economical_region |> head(10)
 ```
 
 ## Plot 1
 
-```{r}
+```{r,echo=FALSE}
 #plotting the data 
 #change interpretation of the plot to be about highest 10. Mention location, type, overall scores for these.
 ggplot(highest_10_region, aes(x = reorder(district, avg_disadvantaged), 
@@ -77,13 +90,11 @@ ggplot(highest_10_region, aes(x = reorder(district, avg_disadvantaged),
 
 The horizontal bar chart of the ten districts with the lowest average percent economically disadvantaged highlights a small group of districts and charter schools with very low concentrations of economically disadvantaged students. Brock ISD and Trivium Academy stand out at the top of this list, followed by Leadership Prep School and a mix of charter and small district programs; the x-axis values show these averages are near or below single-digit percentages. This pattern suggests these districts are outliers in the dataset, and because they are small or specialized (charter and specialty schools), their demographic profiles differ substantially from the statewide mix — an important caveat when comparing demographic measures to performance outcomes.
 
-## Plot 2 `Overall\nRating`
+## Plot 2 "Overall Rating"
 
-```{r}
-colnames(data)
-```
 
-```{r}
+
+```{r,echo=FALSE}
 ggplot(data, aes(x = overall_rating, fill = overall_rating)) +
   geom_bar() +
   scale_fill_brewer(palette = "YlGnBu") + 
@@ -106,7 +117,7 @@ The rating-distribution bar chart shows most districts receive mid-to-high ratin
 
 ## Plot 3 `Academic Growth Score`
 
-```{r}
+```{r,echo=FALSE}
 #Academic growth score and overall rating
 data <- data |>
   mutate(
@@ -134,13 +145,13 @@ The scatterplot of Academic Growth Score versus Overall Score reveals a clear po
 
 ## Filtering it to 9-12
 
-```{r}
+```{r,include=FALSE}
 filtered_df <- data |>
   filter(grades_served == "09 - 12")
 filtered_df
 ```
 
-```{r}
+```{r,include=FALSE}
 filtered_df_pivoted <- filtered_df |>
   pivot_longer(
     cols = starts_with("distinction_"),
@@ -150,11 +161,11 @@ filtered_df_pivoted <- filtered_df |>
 filtered_df_pivoted
 ```
 
-```{r}
+```{r,include=FALSE}
 colnames(filtered_df_pivoted)
 ```
 
-```{r}
+```{r,include=FALSE}
 final_df <- filtered_df_pivoted |>
   group_by(campus, district) |>
   summarise(
@@ -169,12 +180,12 @@ final_df <- filtered_df_pivoted |>
 final_df
 
 ```
+
 # Methods
 
 #### Data Source
 
 The data set used in this report is from the Texas Education Agency’s 2025 State, Region, District, and Campus-Level Accountability Report. The data in this report originates from public and charter schools in Texas overseen by the Texas Education Agency (TEA), who are required to submit all student standardized tests and other academic performance data [@texaseducationagency2025]. Each observation in this data set represents a different campus.
-
 
 Before building our model, we performed some data pre-processing steps to clean and organize the initial data set for analysis:
 
@@ -194,16 +205,14 @@ Before building our model, we performed some data pre-processing steps to clean 
 
 The final variables selected for analysis are:
 
-- `number_of_students`
-- `academic_growth_score`
-- `percent_economically_disadvantaged`
-- `overall_score`
-- `school_progress_score`
-- `distinction_score`
-- `campus`
-- `district`
-
-
+-   `number_of_students`
+-   `academic_growth_score`
+-   `percent_economically_disadvantaged`
+-   `overall_score`
+-   `school_progress_score`
+-   `distinction_score`
+-   `campus`
+-   `district`
 
 <center>
 
@@ -222,23 +231,20 @@ The final variables selected for analysis are:
 </center>
 
 \newpage
+
 #### Variable Units and Range
 
 The original data contains many variables related to school performance, but in this paper we will focus on schools’ Overall Score, their Academic Growth Scores, their Distinction Scores, the number of students, and the percentage of students who are economically disadvantaged. Before selecting our model, we chose one variable from here as response variable and the rest as explanatory variable.
 
-
-
-
 Table 1: Response Variable Information
 
-| Variable         | Type    | Range        |
-|------------------|---------|--------------|
+| Variable      | Type    | Range        |
+|---------------|---------|--------------|
 | Overall Score | Numeric | 0–100 points |
-
 
 Table 2: Explanatory Variable Information
 
-| Variable                            | Type    | Unit of Observation | Range   |
+| Variable                           | Type    | Unit of Observation | Range   |
 |------------------------------------|---------|---------------------|---------|
 | Number of students                 | Numeric | Students            | 1–5,317 |
 | Academic growth score              | Numeric | School              | 0–100   |
@@ -248,32 +254,77 @@ Table 2: Explanatory Variable Information
 
 ##### Variable Descriptions
 
+1.  `Overall Score` : This variable represents the school’s final accountability rating on a 0-100 scale. It represents a schoolwide summary of academic performance, progress, and equity. This score is calculated by using three accountability domains: Student Achievement, School Progress, and Closing the Gaps. For this score, 70% is made up of either the Student Achievement or School progress (it picks the “better outcome”) and 30% of it is from their Closing the Gaps domain score (which evaluates how well a school is supporting the performance of specific students, specifically economically disadvantaged students, students from certain racial groups, and special needs students among others). The data handbook further explains how these were specifically calculated [@texaseducationagency2025].
 
-1. `Overall Score` : This variable represents the school’s final accountability rating on a 0-100 scale. It represents a schoolwide summary of academic performance, progress, and equity. This score is calculated by using three accountability domains: Student Achievement, School Progress, and Closing the Gaps. For this score, 70% is made up of either the Student Achievement or School progress (it picks the “better outcome”) and 30% of it is from their Closing the Gaps domain score (which evaluates how well a school is supporting the performance of specific students, specifically economically disadvantaged students, students from certain racial groups, and special needs students among others). The data handbook further explains how these were specifically calculated [@texaseducationagency2025]. 
+2.  `Academic Growth Score` : This variable is a measure of how much students improved academically over time. It is calculated using a raw growth score which is based on whether students met, exceeded, or fell short of STAAR progress (which is further defined in the data handbook). This raw growth score is then converted to a scaled score using a table, which then becomes the academic growth score, which is also measured on a 0-100 scale.
 
+3.  `Distinction Score` : This variable is derived from the 7 categories of Distinction that schools report. We explained this derivation in our dataset processing steps. But first here is what distinction means across the categories: It is calculated by comparing a school’s performance on multiple indicators to a group of similar campuses. If it places in the top quartile on at least 50% of indicators (for elementary and middle school) or 33% (for high school), it received the distinction. This means that the distinction score is whether or not the school performed exceptionally well compared to similar schools, and is a binary value of 0 (no distinction) or 1 (distinction) across multiple categories. So the distinction score variable sums up the amount of category a school got distinction and reports it on a 0-7 scale.
 
-2. `Academic Growth Score` :  This variable is a measure of how much students improved academically over time. It is calculated using a raw growth score which is based on whether students met, exceeded, or fell short of STAAR progress (which is further defined in the data handbook). This raw growth score is then converted to a scaled score using a table, which then becomes the academic growth score, which is also measured on a 0-100 scale.
+4.  `Percent economically disadvantaged` : The percentage of students who are economically disadvantaged represents the percentage of students who are economically disadvantaged according to a few criteria. These include eligibility for free and reduced lunch prices and SNAP/TANF participation.
 
-3. `Distinction Score` : This variable is derived from the 7 categories of Distinction that schools report. We explained this derivation in our dataset processing steps. But first here is what distinction means across the categories: It is calculated by comparing a school’s performance on multiple indicators to a group of similar campuses. If it places in the top quartile on at least 50% of indicators (for elementary and middle school) or 33% (for high school), it received the distinction. This means that the distinction score is whether or not the school performed exceptionally well compared to similar schools, and is a binary value of 0 (no distinction) or 1 (distinction) across multiple categories. So the distinction score variable sums up the amount of category a school got distinction and reports it on a 0-7 scale. 
+5.  `Number of students` : This variable represents the number of students enrolled in each campus.
 
-4. `Percent economically disadvantaged` : The percentage of students who are economically disadvantaged represents the percentage of students who are economically disadvantaged according to a few criteria. These include eligibility for free and reduced lunch prices and SNAP/TANF participation.
-
-5. `Number of students` : This variable represents the number of students enrolled in each campus.
-
-6. `School Progress Score` : 
-
+6.  `School Progress Score` :
 
 #### Model Specification
 
-We built a multiple linear regression model using nested F test model. 
+We built a multiple linear regression model using nested F test model.
 
-## Will add the models here
+```{r,include=FALSE}
+final_df$academic_growth_score <- as.numeric(final_df$academic_growth_score)
+final_df$distinction_score <- as.numeric(final_df$distinction_score)
+final_df$school_progress_score<- as.numeric(final_df$school_progress_score)
+final_df$percent_economically_disadvantaged<- as.numeric(final_df$percent_economically_disadvantaged)
+final_df$number_of_students<- as.numeric(final_df$number_of_students)
+```
+
+
+The reduced model:
+$$
+\text{overall score}_i =
+\beta_0 +
+\beta_1 \cdot \text{academic growth score}_i +
+\beta_2 \cdot \text{distinction score}_i +
+\beta_3 \cdot \text{school progress score}_i +
+\varepsilon_i
+$$
+
+```{r,echo=FALSE}
+reduced_model <- lm(
+  overall_score ~ academic_growth_score +
+    distinction_score +
+    school_progress_score,
+  data = final_df
+)
+
+broom::tidy(reduced_model) |>
+  kableExtra::kable()
+```
+
+The full model:
+
+$$
+\text{overall score}_i = \beta_0 + \beta_1 \cdot \text{academic growth score}_i + \beta_2 \cdot \text{distinction score}_i + \beta_3 \cdot \text{school progress score}_i$$ $$+ \beta_4 \cdot \text{percent economically disadvantaged}_i + \beta_5 \cdot \text{number of students}_i + \varepsilon_i 
+$$
+
+```{r,echo=FALSE}
+full_model <- 
+lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score + percent_economically_disadvantaged+number_of_students, data = final_df )
+broom::tidy(full_model) |>
+  kableExtra::kable()
+```
+
 
 #### Model Selection
 
-To determine the model, we started with calculating the VIF to detect any multicolinearity issues among the explanatory variables. We calculated this using both the reduced and full model. There were no multicolinearity issues given all of the VIFs show litle colinearity < 5. 
+To determine the model, we started with calculating the VIF to detect any multicolinearity issues among the explanatory variables. We calculated this using both the reduced and full model. There were no multicolinearity issues given all of the VIFs show litle colinearity < 5.
 
-#Just a bit confused here so will review it later
-We began to test our model using stepwise AIC. We started with a full model that had all the variable and used the stepwise AIC forward method. We can see the AIC dropped as we go.
+We began to test our model using forward model selection with AIC. See Appendix \@ref(app-aic)) for detailed results. 
 
 
+
+# Appendix 
+## Appendix A: Conditions of the linear regression model {#app-conditions}
+## Appendix B: VIF {#app-vif}
+## Appendix C: Stepwise AIC {#app-aic}
+## Appendix D: Influential Points {#app-influential}
