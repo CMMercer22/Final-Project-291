@@ -342,6 +342,34 @@ To find the influential points, we first filtered the data to find the schools w
 
 ## Corresponding Confidence Interval
 
+
+```{r}
+vcov(full_model)
+
+```
+
+```{r}
+g <- coef(full_model)[1] + coef(full_model)[5]
+g_var <- vcov(full_model)[1,1] + vcov(full_model)[5,5] + 2*vcov(full_model)[1,5]
+g_se <- sqrt(g_var)
+t_stat <- (g- 0)/g_se; as.numeric(t_stat)
+
+```
+
+```{r}
+qt(0.975,1255 - 5 -1)
+```
+
+```{r}
+upper_ci <- (7.07454 + 1.961865*1.76277)
+lower_ci <- (7.07454 - 1.961865*1.76277)
+lower_ci
+upper_ci
+```
+```
+
+
+
 ## Interpret the hypothesis test and its' results - done 
 
 The full model contains 5 predictor terms and the reduced model contains 3 predictor terms. We want to see if the additional 2 predictor (number of students & percent economically disadvantaged in each school) terms contribute meaningfully to the model. 
