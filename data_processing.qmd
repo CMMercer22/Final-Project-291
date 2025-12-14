@@ -109,7 +109,6 @@ final_df <- final_df[complete.cases(final_df),]
 
 ```
 
-
 ```{r}
 colnames(final_df)
 ```
@@ -137,13 +136,20 @@ plot(reduced_model)
 ```{r}
 #logged
 #the logged model is worse.
-reduced_model_logged <-
+reduced_model <-
   lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score, data = final_df )
-summary(reduced_model_logged)
+summary(reduced_model)
 ```
 
+
 ```{r}
-plot(reduced_model_logged)
+#this is a bad plot. I think for plots we should just use the model conditions and interpret those plots.
+ggplot(final_df, aes(x= academic_growth_score, y = overall_score, color = distinction_score))+geom_point()+geom_smooth(method = "lm", se = TRUE)
+```
+
+
+```{r}
+plot(reduced_model)
 ```
 
 ```{r}
@@ -151,6 +157,7 @@ full_model <-
   lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score + percent_economically_disadvantaged+number_of_students, data = final_df )
 summary(full_model)
 ```
+
 
 ```{r}
 plot(full_model)
@@ -251,4 +258,3 @@ reduced_model_logged <-
   lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score, data = final_df )
 summary(reduced_model_logged)
 ```
-
