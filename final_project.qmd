@@ -407,13 +407,13 @@ par(mfrow = c(1, 1))
 ```
 
 ## Appendix B: VIF {#sec-vif}
+Checking the VIF for the full model.  
 ```{r,echo=FALSE}
-vif(reduced_model)
 vif(full_model)
 ```
 
 ## Appendix C: Stepwise AIC {#sec-aic}
-
+Checking to see how adding additional parameters affect AIC. 
 ```{r,echo=FALSE}
 add1(reduced_model,
      scope = ~ number_of_students +
@@ -424,14 +424,14 @@ add1(reduced_model,
      test = "F")
 ```
 
-
 ## Appendix D: Influential Points {#sec-influential}
-```{r}
+This is the result of the summary table after we removed the points. As we can see the conclusion does not change.
+```{r,include=FALSE}
 influence <- augment(full_model)
 influence <- influence |> mutate(row_id = row_number())
 
 ```
-```{r}
+```{r,include=FALSE}
 k_plus_one <- length(coef(full_model))
 n <- nrow(final_df)
 
@@ -446,7 +446,7 @@ save$row_id <- leverage_index
 augment_df<- augment_df |> left_join(save|>select(campus, district,row_id), join_by("row_id"=="row_id"))
 
 ```
-```{r}
+```{r,include=FALSE}
 ##std residuals
 augment_df1<-augment_df |> filter(.std.resid < -2 | .std.resid > 2)
 std_resid_id <- augment_df |> filter(.std.resid < -2 | .std.resid > 2) |> select(row_id) |> pull()
@@ -463,8 +463,8 @@ final_df <-final_df[-333, ]
 new_model <- lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score + percent_economically_disadvantaged+number_of_students, data = final_df )
 summary(new_model)
 ```
-```{r,include=FALSE}
-#the refitted linear regression plots 
+```{r,echo=FALSE}
+#the refitted linear regression summary  
 reduced_model_logged <-
   lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score, data = final_df )
 summary(reduced_model_logged)
