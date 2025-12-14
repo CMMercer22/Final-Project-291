@@ -331,9 +331,7 @@ For checking the linearity and equal variance we check the residual plot of the 
 
 For both of the reduced and full model, it violates the linearity, equal variance and normality condition. From the residual plot, we see that it widens as the x gets bigger and there is a pattern above and below y= 0 line. There seems to be unusual points as well which we will investigate later. 
 
-In the Q-Q plot, for the reduced model it the points deviates from the reference line. 
-
-
+In the Q-Q plot, for the both of the model, the points deviates from the reference line. So it does violate the normality condition. 
 
 #### Model Selection
 
@@ -345,7 +343,7 @@ We began to test our model using forward model selection with AIC. See Appendix 
 To find the influential points, we first filtered the data to find the schools with leverage that was outside of the acceptable range, then further filtered that list to the schools that additionally had a standardized residual that was outside of the range. After filtering, we were left with only five schools that were potential influential points. We refit the model without them and saw no noticeable difference, so we added them back into the final data set. See Appendix D for detailed results. 
 
 
-# Discussion {sec-discussions}
+# Discussion {#sec-discussions}
 The goal of this study was to address the question whether schools in Texas with higher percentages of economically disadvantaged students have lower accountability ratings. Some things should be considered before drawing any conclusions from this model. First, one potential issue with this model is a violation of independence among the variables. Because the Overall Score variable is calculated using some of the metrics within the explanatory variables, we have some concern about this model's independence. However, one of the strengths of this study was a very low VIC and AIC across all variables. So we are somewhat confident that this should not be a major problem, as it indicates the variables are not collinear. Another thing to consider is that this data is only from one year, and it is very difficult to build a dataset with longer term data due to Texas’s constant fluctuations in how it reports and calculates the same data across many years. Next, the major strength of this study is that the model performs very well and yields statistically significant results.  Finally, the conclusions drawn from this should also only be used to form conclusions about public and charter schools within Texas in the academic year 2024-2025. This is because the metrics used to create many of the variables tested are specific to Texas’s academic measurements, such as the STAAR test, and cannot easily be compared with those of other States, and the data used is limited to only Texas public and charter schools.  
 
 
