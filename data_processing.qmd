@@ -141,7 +141,6 @@ reduced_model <-
 summary(reduced_model)
 ```
 
-
 ```{r}
 plot(reduced_model)
 ```
@@ -152,9 +151,33 @@ full_model <-
 summary(full_model)
 ```
 
-
 ```{r}
 plot(full_model)
+
+```
+
+```{r}
+vcov(full_model)
+
+```
+
+```{r}
+g <- coef(full_model)[1] + coef(full_model)[5]
+g_var <- vcov(full_model)[1,1] + vcov(full_model)[5,5] + 2*vcov(full_model)[1,5]
+g_se <- sqrt(g_var)
+t_stat <- (g- 0)/g_se; as.numeric(t_stat)
+
+```
+
+```{r}
+qt(0.975,1255 - 5 -1)
+```
+
+```{r}
+upper_ci <- (7.07454 + 1.961865*1.76277)
+lower_ci <- (7.07454 - 1.961865*1.76277)
+lower_ci
+upper_ci
 ```
 
 ```{r}
