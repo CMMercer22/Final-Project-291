@@ -31,19 +31,16 @@ library(broom)
 library(kableExtra)
 library(car)
 ```
+
 # Abstract
 
-
-  Understanding the extent to which economic inequality affects education quality and accessibility is crucial to making progress towards addressing these issues. While one can assume that economically disadvantaged areas are less likely to have high quality public education, the objective of this paper is to explore specifically if schools in Texas with higher percentages of economically disadvantaged students have lower accountability ratings. This was done by modeling data from the Texas Education Agency’s annual academic accountability ratings. In doing this, we found that the percentage of economically disadvantaged students was a statistically significant predictor of a school’s overall score, while controlling other factors such as the number of students, the academic growth scores, and distinction points. These findings suggest that public and charter schools in Texas with lower overall scores have a higher percentage of economically disadvantaged students, and additionally, schools with higher overall scores tend to have lower percentages of economically disadvantaged students.
+Understanding the extent to which economic inequality affects education quality and accessibility is crucial to making progress towards addressing these issues. While one can assume that economically disadvantaged areas are less likely to have high quality public education, the objective of this paper is to explore specifically if schools in Texas with higher percentages of economically disadvantaged students have lower accountability ratings. This was done by modeling data from the Texas Education Agency’s annual academic accountability ratings. In doing this, we found that the percentage of economically disadvantaged students was a statistically significant predictor of a school’s overall score, while controlling other factors such as the number of students, the academic growth scores, and distinction points. These findings suggest that public and charter schools in Texas with lower overall scores have a higher percentage of economically disadvantaged students, and additionally, schools with higher overall scores tend to have lower percentages of economically disadvantaged students.
 
 \newpage
+
 # Introduction
 
-Through this paper, we aim to address the question: Do schools in Texas with higher percentages of economically disadvantaged students have lower accountability ratings? To address this, we sourced our data from Texas’s annual academic accountability ratings, which it provides for all of its public and charter schools. This question is of particular interest now because the Academic accountability ratings are the benchmark the Texas Education Agency (TEA) uses to take over underperforming districts [pg 100 accountability handbook]. This adds additional questions to what makes a school at risk for being taken over. The previous two districts to be taken over, Houston ISD and Fort Worth ISD, both had a large percentage of economically disadvantaged students. Some districts have begun redrawing their boundaries to avoid government takeovers[cite Texas Tribune]. If schools that predominantly serve economically disadvantaged students are closing to avoid a government takeover, this would cause an undue burden on those students, who would then have to travel further to get to classes, which can already be a barrier to education. Texas has also recently updated the criteria in its accountability rating system, which some teachers and superintendents claim has made earning a passing grade more difficult, potentially affecting whether student economic status influences academic ratings. 
-  Previous research has suggested a connection between a student's economic status and school performance. For example, a study from Stanford examining all public school districts in the United States found a strong relationship between district socioeconomic status and average academic achievement [stanford]. Another study found a strong connection between student socioeconomic status and student achievement[second paper]. But neither of these is recent, nor do they use the data that Texas uses to internally select what it considers to be failing schools. Our paper aims to provide additional insight into how Texas’s academic achievement ratings relate to students' socioeconomic status, given the state’s new academic achievement rating system.
-  Texas’s academic accountability rating system reports multiple variables containing information on school performance, but the ones of interest to us are as follows: Academic Growth Score, Overall Score, School Progress Score, and multiple variables indicating distinction in particular areas, which we have combined into a single variable that tracks total earned distinctions.
-
-
+Through this paper, we aim to address the question: Do schools in Texas with higher percentages of economically disadvantaged students have lower accountability ratings? To address this, we sourced our data from Texas’s annual academic accountability ratings, which it provides for all of its public and charter schools. This question is of particular interest now because the Academic accountability ratings are the benchmark the Texas Education Agency (TEA) uses to take over underperforming districts \[pg 100 accountability handbook\]. This adds additional questions to what makes a school at risk for being taken over. The previous two districts to be taken over, Houston ISD and Fort Worth ISD, both had a large percentage of economically disadvantaged students. Some districts have begun redrawing their boundaries to avoid government takeovers\[cite Texas Tribune\]. If schools that predominantly serve economically disadvantaged students are closing to avoid a government takeover, this would cause an undue burden on those students, who would then have to travel further to get to classes, which can already be a barrier to education. Texas has also recently updated the criteria in its accountability rating system, which some teachers and superintendents claim has made earning a passing grade more difficult, potentially affecting whether student economic status influences academic ratings. Previous research has suggested a connection between a student's economic status and school performance. For example, a study from Stanford examining all public school districts in the United States found a strong relationship between district socioeconomic status and average academic achievement \[stanford\]. Another study found a strong connection between student socioeconomic status and student achievement\[second paper\]. But neither of these is recent, nor do they use the data that Texas uses to internally select what it considers to be failing schools. Our paper aims to provide additional insight into how Texas’s academic achievement ratings relate to students' socioeconomic status, given the state’s new academic achievement rating system. Texas’s academic accountability rating system reports multiple variables containing information on school performance, but the ones of interest to us are as follows: Academic Growth Score, Overall Score, School Progress Score, and multiple variables indicating distinction in particular areas, which we have combined into a single variable that tracks total earned distinctions.
 
 ```{r,include=FALSE}
 library(readr)
@@ -67,6 +64,7 @@ data <-cleaned_name_school |>
   mutate(percent_economically_disadvantaged = 
            as.numeric(str_replace_all(percent_economically_disadvantaged, "[^0-9.]", "")))
 ```
+
 ```{r,include=FALSE}
 filtered_df <- data |>
   filter(grades_served == "09 - 12")
@@ -82,6 +80,7 @@ filtered_df_pivoted <- filtered_df |>
   ) 
 filtered_df_pivoted
 ```
+
 ```{r,include=FALSE}
 final_df <- filtered_df_pivoted |>
   group_by(campus, district) |>
@@ -155,14 +154,11 @@ The original data contains many variables related to school performance, but in 
 
 Table 1: Response Variable Information
 
-| Variable          | Type    | Unit of Observation | Range            |
---------------------|---------|---------------------|------------------|
-| Overall Score     | Numeric | School              | 0–100 points     |
-
-
+| Variable      | Type    | Unit of Observation | Range        |
+|---------------|---------|---------------------|--------------|
+| Overall Score | Numeric | School              | 0–100 points |
 
 Table 2: Explanatory Variable Information
-
 
 | Variable                           | Type    | Unit of Observation | Range   |
 |------------------------------------|---------|---------------------|---------|
@@ -184,7 +180,7 @@ Table 2: Explanatory Variable Information
 
 5.  `Number of students` : This variable represents the number of students enrolled in each campus.
 
-6.  `School Progress Score` :
+6.  `School Progress Score` : The School Progress score is calculated from two components, academic growth and relative performance. Academic growth is based on STAAR growth outcomes which is initially reported as a raw score, then converted to a scaled score from 0-100 using a table defined in the handbook. The relative performance component is calculated using STAAR performance outcomes which are also converted to a scaled 0-100 score. The higher of the two is selected as the School Progress score.
 
 \newpage
 
@@ -200,8 +196,7 @@ final_df$percent_economically_disadvantaged<- as.numeric(final_df$percent_econom
 final_df$number_of_students<- as.numeric(final_df$number_of_students)
 ```
 
-**Reduced model**
-$$
+**Reduced model** $$
 \widehat{\text{overall score}}_i =
 \beta_0 +
 \beta_1 \cdot \text{academic growth score}_i +
@@ -237,7 +232,6 @@ broom::tidy(full_model) |>
 kable_styling(latex_options = c("striped", "scale_down","hold_position"))|>kable_classic(html_font = "Cambria")
 ```
 
-
 #### Evaluating assumptions of the model
 
 The four assumptions we need to evaluate are : Linearity, Independence, Normality, Equal Variance.
@@ -260,39 +254,36 @@ To find the influential points, we first filtered the data to find the schools w
 
 # Results
 
-
 ## Interpretation of the fitted model
+
 $$
 \widehat{\text{overall score}}_i
  = \beta_0 + \beta_1 \cdot \text{academic growth score}_i + \beta_2 \cdot \text{distinction score}_i + \beta_3 \cdot \text{school progress score}_i$$ $$+ + \beta_4 \cdot \text{number of students}_i+ \beta_5 \cdot \text{percent economically disadvantaged}_i
 $$
 
-
 ## Interpretation of the relevant co-effecients
 
-$\beta_0$ : Represents our intercept. The intercept is the expected value of the Overall Score when all explanatory variables are zero. In context, when the following coefficients are equal to zero, the school would have an overall score of ~7.16.
+$\beta_0$ : Represents our intercept. The intercept is the expected value of the Overall Score when all explanatory variables are zero. In context, when the following coefficients are equal to zero, the school would have an overall score of \~7.16.
 
-$\beta_1$: Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable Academic Growth Score, holding all other variables constant. In context, a 1 point increase in `Academic Growth Score`, there is a ~0.05 decrease in overall score holding all other variables constant.
+$\beta_1$: Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable Academic Growth Score, holding all other variables constant. In context, a 1 point increase in `Academic Growth Score`, there is a \~0.05 decrease in overall score holding all other variables constant.
 
-$\beta_2$: Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable Distinction Score, holding all other variables constant. In our model, 1 point increase in `Distinction Score` would cause a ~0.38 increase in `Overall Score`, holding all other variables constant.
+$\beta_2$: Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable Distinction Score, holding all other variables constant. In our model, 1 point increase in `Distinction Score` would cause a \~0.38 increase in `Overall Score`, holding all other variables constant.
 
-$\beta_3$: Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable school progress score. In context, a one point increase in the school progress score would result in a ~1.02 increase in the overall score holding everything else constant.
+$\beta_3$: Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable school progress score. In context, a one point increase in the school progress score would result in a \~1.02 increase in the overall score holding everything else constant.
 
 $\beta_4$ : Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable Percent economically disadvantaged. A one percent change would result in a 0.09 decrease in the overall score, holding all other variables constant.
 
 $\beta_5$ : Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable Number of students. For every additional student, there is a 0.0002 decrease in the overall score, holding all other variables constant.
 
-
 ## Practical Importance
 
-
 ## Corresponding Confidence Interval
-
 
 ```{r}
 vcov(full_model)
 
 ```
+
 ```{r}
 g <- coef(full_model)[1] + coef(full_model)[5]
 g_var <- vcov(full_model)[1,1] + vcov(full_model)[5,5] + 2*vcov(full_model)[1,5]
@@ -312,10 +303,9 @@ lower_ci
 upper_ci
 ```
 
+## Hypothesis test
 
-## Hypothesis test 
-
-The full model contains 5 predictor terms and the reduced model contains 4 predictor terms. We want to see if the additional 1 predictor (percent economically disadvantaged in each school) terms contribute meaningfully to the model. 
+The full model contains 5 predictor terms and the reduced model contains 4 predictor terms. We want to see if the additional 1 predictor (percent economically disadvantaged in each school) terms contribute meaningfully to the model.
 
 $$
 H_0:\ \beta_j = 0 \quad \text{for all predictors dropped from the full model}
@@ -325,8 +315,7 @@ $$
 H_A:\ \beta_j \neq 0 \quad \text{for at least one predictor dropped from the full model}
 $$
 
-We will conduct an ANOVA test to do the hypothesis test. 
-
+We will conduct an ANOVA test to do the hypothesis test.
 
 ```{r,echo=FALSE}
 anova_test <- anova(reduced_model, full_model) 
@@ -334,7 +323,8 @@ kbl(cbind(anova_test), booktabs = T) |>
 kable_styling(latex_options = c("striped", "scale_down","hold_position"))|>kable_classic(html_font = "Cambria")
 
 ```
-We reject the null hypothesis and conclude that we have very strong evidence that the extra term (economically disadvantaged percantage) is necessary (p < 0.05) taking the significance level of 0.05. 
+
+We reject the null hypothesis and conclude that we have very strong evidence that the extra term (economically disadvantaged percantage) is necessary (p \< 0.05) taking the significance level of 0.05.
 
 ```{r,include=FALSE}
 plot_p <- data.frame(
@@ -366,8 +356,6 @@ ggplot(plot_p, aes(x = P_value, y = Predictors)) +
 ```
 
 This plot shows us that all of our predictor is lower than 0.05, which is our significance level.
-
-
 
 # Discussion {#sec-discussions}
 
@@ -473,4 +461,3 @@ reduced_model_logged <-
   lm(overall_score ~ academic_growth_score+distinction_score+ school_progress_score, data = final_df )
 summary(reduced_model_logged)
 ```
-
