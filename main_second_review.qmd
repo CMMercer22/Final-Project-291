@@ -263,17 +263,17 @@ $$
 
 ## Interpretation of the relevant co-effecients
 
-$\beta_0$ : Represents our intercept. The intercept is the expected value of the Overall Score when all explanatory variables are zero. In context, when the following coefficients are equal to zero, the school would have an overall score of \~7.16.
+$\beta_0$ : Represents our intercept. The intercept is the expected value of the `Overall Score` when all explanatory variables are zero. In context, when the following coefficients are equal to zero, the school would have an overall score of \~7.16.
 
-$\beta_1$: Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable Academic Growth Score, holding all other variables constant. In context, a 1 point increase in `Academic Growth Score`, there is a \~0.05 decrease in overall score holding all other variables constant.
+$\beta_1$: Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable `Academic Growth Score`, holding all other variables constant. In context, a 1 point increase in `Academic Growth Score`, there is a \~0.05 decrease in the overall score holding all other variables constant.
 
-$\beta_2$: Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable Distinction Score, holding all other variables constant. In our model, 1 point increase in `Distinction Score` would cause a \~0.38 increase in `Overall Score`, holding all other variables constant.
+$\beta_2$: Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable `Distinction Score`, holding all other variables constant. In our model, 1 point increase in `Distinction Score` would cause a \~0.38 increase in the overall score, holding all other variables constant.
 
 $\beta_3$: Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable school progress score. In context, a one point increase in the school progress score would result in a \~1.02 increase in the overall score holding everything else constant.
 
-$\beta_4$ : Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable Percent economically disadvantaged. A one percent change would result in a 0.09 decrease in the overall score, holding all other variables constant.
+$\beta_4$ : Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable Percent economically disadvantaged. A one percent change would result in a \~0.09 decrease in the overall score, holding all other variables constant.
 
-$\beta_5$ : Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable Number of students. For every additional student, there is a 0.0002 decrease in the overall score, holding all other variables constant.
+$\beta_5$ : Indicates the change in the dependent variable overall score for a one-unit change in the corresponding independent variable `Number of Students`. For every additional student, there is a \~0.0002 decrease in the overall score, holding all other variables constant.
 
 ## Practical Importance
 
